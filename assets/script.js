@@ -6,7 +6,10 @@ var currentTempEl = document.getElementById("temp");
 var currentHumidityEl = document.getElementById("humidity");
 var currentWindEl = document.getElementById("wind-speed");
 var currentUvEl = document.getElementById("Uv-index");
-var fivedayContainer = $("#fiveday-forecast")
+var currentPicEl = document.getElementById("current-pic");
+var weatherPicEl = document.getElementById("icon-pic");
+var fivedayContainer = $("#fiveday-forecast");
+
 
 $(document).ready(function () {
     var searchContainer = $('#search-list')
@@ -36,6 +39,9 @@ $(document).ready(function () {
                 var temp = data.main.temp;
                 var humidity = data.main.humidity
                 var wind = data.wind.speed
+                var weatherPic = data.weather[0].icon;
+                weatherPicEl.setAttribute("src","https://openweathermap.org/img/w/" + weatherPic + ".png");
+                weatherPicEl.setAttribute("alt", data.weather[0].description);
                 currentCityEl.innerText = cityName
                 currentTempEl.innerText = "Temperature: " + temp + " F"
                 currentHumidityEl.innerText = "Humidity: " + humidity + " %"
@@ -55,19 +61,26 @@ $(document).ready(function () {
                     var tempFive = fiveday.main.temp;
                     var humidityFive = fiveday.main.humidity;
                     var windFive = fiveday.wind;
-                    var day = fiveday.dt_txt;
-                    var dayDiv = $("<div class='day-name'>");
+                    var weather = fiveday.weather
+                    var iconURL = "https://openweathermap.org/img/w/" + weather[0].icon + '.png'
+                    var day = moment(fiveday.dt_txt).format('MMMM Do, dddd');
+                    var cardDiv = $("<div class='card-body'>")
+                    var dayDiv = $("<div class='card text-white bg-primary mb-3 day-name'>");
+                    var weatherImg = $("<img class='icon-name' />")
                     var tempDiv = $("<div class='temp-name'>");
                     var humidityDiv = $("<div class='humidity-name'>");
                     var windDiv = $("<div class='wind-name'>");
+                    weatherImg.attr('src', iconURL)
                     dayDiv.text(day);
                     tempDiv.text("Temperature: " + tempFive + " F");
                     humidityDiv.text("Humidity: " + humidityFive  + " %");
                     windDiv.text("Wind: " + windFive.speed + " MPH");
-                    fivedayContainer.append(dayDiv);
-                    fivedayContainer.append(tempDiv);
-                    fivedayContainer.append(humidityDiv);
-                    fivedayContainer.append(windDiv);
+                    cardDiv.append(dayDiv);
+                    cardDiv.append(weatherImg);
+                    cardDiv.append(tempDiv);
+                    cardDiv.append(humidityDiv);
+                    cardDiv.append(windDiv);
+                    fivedayContainer.append(cardDiv);
                 }
             }
         });
